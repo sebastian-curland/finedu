@@ -36,18 +36,12 @@ function loadProfilesScreen() {
 }
 
 // Wraps a route's real `load` so it's skipped in favor of the profiles
-// screen whenever there is no active profile. This also doubles as the
-// router's central "a route resolved and there IS an active profile"
-// checkpoint: it runs exactly once per navigation (once per call to the
-// route's `load`, from router.js's resolve()), so it's the single spot to
-// touch the daily streak — never once per screen mount.
+// screen whenever there is no active profile.
 function guarded(load) {
   return async (params) => {
-    const profile = store.getActiveProfile();
-    if (!profile) {
+    if (!store.getActiveProfile()) {
       return loadProfilesScreen();
     }
-    gamification.touchDaily(profile.id);
     return load(params);
   };
 }
@@ -64,4 +58,16 @@ const routes = [
   { path: '/leaderboard', load: guarded(async () => placeholder('שיאים')) },
 ];
 
-start(routes, '/map');
+// Central "a route resolved and there IS an active profile" hook, passed
+// into router.js so it fires once per successful screen mount for EVERY
+// route — including '/profiles', which guarded() never wraps. router.js
+// stays store.js-agnostic; this is where the profile check + streak touch
+// actually happen.
+function onRouteResolved() {
+  const profile = store.getActiveProfile();
+  if (profile) {
+    gamification.touchDaily(profile.id);
+  }
+}
+
+start(routes, '/map', onRouteResolved);

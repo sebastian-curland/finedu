@@ -9,6 +9,14 @@
 // redirects to whenever the current hash is empty or matches no route in
 // the table. The redirect is done via `location.hash =`, so it round-trips
 // through a normal `hashchange` event.
+//
+// `onRouteResolved(path, params)` (optional 3rd arg to `start`) is called
+// once after every successful screen mount — this is the single central
+// hook for "a route resolved and rendered," regardless of which route it
+// was (including routes, like '/profiles', that main.js leaves ungated).
+// router.js deliberately stays store.js-agnostic: callers (main.js) pass
+// whatever profile-aware logic they need as this callback instead of the
+// router importing store.js itself.
 
 let currentModule = null;
 
@@ -55,7 +63,7 @@ function updateActiveTab(path) {
   });
 }
 
-async function resolve(routes, notFoundRoute) {
+async function resolve(routes, notFoundRoute, onRouteResolved) {
   const path = parseHash();
   const match = matchRoute(routes, path);
 
@@ -90,13 +98,21 @@ async function resolve(routes, notFoundRoute) {
   if (mod && typeof mod.mount === 'function' && app) {
     mod.mount(app, match.params);
     currentModule = mod;
+
+    if (typeof onRouteResolved === 'function') {
+      try {
+        onRouteResolved(match.route.path, match.params);
+      } catch (err) {
+        console.error('[router] onRouteResolved hook failed', err);
+      }
+    }
   }
 
   updateActiveTab(path);
 }
 
-export function start(routes, notFoundRoute) {
-  const handler = () => resolve(routes, notFoundRoute);
+export function start(routes, notFoundRoute, onRouteResolved) {
+  const handler = () => resolve(routes, notFoundRoute, onRouteResolved);
   window.addEventListener('hashchange', handler);
   handler();
 }
