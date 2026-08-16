@@ -4,3 +4,123 @@
    appends its own rules to this file as it's built — screens never create
    their own CSS files.
    ========================================================================== */
+
+/* --- screens/profiles.js -------------------------------------------------- */
+.screen-profiles {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.profile-active-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  text-align: center;
+}
+
+.profile-active-avatar {
+  font-size: 3rem;
+  line-height: 1;
+}
+
+.profile-active-meta {
+  color: var(--color-text-muted);
+}
+
+.profile-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-block-start: var(--space-2);
+}
+
+.profile-list-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.profile-list-item.is-active {
+  border: 2px solid var(--color-primary);
+}
+
+.profile-list-item-main {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  min-height: 44px;
+  padding: 0;
+  background: none;
+  border: none;
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+
+.profile-avatar {
+  font-size: 1.75rem;
+  line-height: 1;
+}
+
+.profile-list-item-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 2px;
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+}
+
+.profile-delete-confirm {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+}
+
+.profile-create-card form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.avatar-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.avatar-picker-btn {
+  min-width: 44px;
+  min-height: 44px;
+  font-size: 1.4rem;
+  line-height: 1;
+  border-radius: var(--radius-md);
+  border: 2px solid var(--color-border);
+  background: var(--color-surface);
+  cursor: pointer;
+}
+
+.avatar-picker-btn.is-selected {
+  border-color: var(--color-primary);
+  background: var(--color-background);
+}
+
+.tier-picker {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.tier-picker .btn {
+  flex: 1;
+}
+
+.form-error {
+  color: var(--color-danger);
+  font-size: 0.9rem;
+}
