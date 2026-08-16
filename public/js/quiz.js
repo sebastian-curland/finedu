@@ -40,7 +40,7 @@ export function renderQuiz(el, questions, { tier, onComplete }) {
   let score = 0;
 
   function shell({ questionText, controlsHtml }) {
-    const pct = of ? Math.round((index / of) * 100) : 0;
+    const pct = of ? Math.round(((index + 1) / of) * 100) : 0;
     el.innerHTML = `
       <div class="screen-quiz">
         <p class="quiz-progress-label">שאלה ${index + 1} מתוך ${of}</p>
@@ -77,14 +77,18 @@ export function renderQuiz(el, questions, { tier, onComplete }) {
       </button>
     `;
     el.querySelector('.quiz-answer-area').insertAdjacentHTML('beforeend', feedbackHtml);
-    el.querySelector('.quiz-continue-btn').addEventListener('click', () => {
-      if (isLast) {
-        onComplete({ score, of });
-      } else {
-        index += 1;
-        renderQuestion();
-      }
-    });
+    el.querySelector('.quiz-continue-btn').addEventListener(
+      'click',
+      () => {
+        if (isLast) {
+          onComplete({ score, of });
+        } else {
+          index += 1;
+          renderQuestion();
+        }
+      },
+      { once: true }
+    );
   }
 
   // --- per-type control rendering + wiring --------------------------------
@@ -138,7 +142,7 @@ export function renderQuiz(el, questions, { tier, onComplete }) {
     return `
       <div class="quiz-num-area">
         <input type="number" inputmode="decimal" class="input quiz-num-input" placeholder="הקלידו מספר…" />
-        <button type="button" class="btn btn-primary quiz-num-submit">בדקו</button>
+        <button type="button" class="btn btn-primary quiz-num-submit" disabled>בדקו</button>
       </div>
     `;
   }
@@ -146,6 +150,9 @@ export function renderQuiz(el, questions, { tier, onComplete }) {
   function wireNum(q) {
     const input = el.querySelector('.quiz-num-input');
     const submit = el.querySelector('.quiz-num-submit');
+    input.addEventListener('input', () => {
+      submit.disabled = input.value.trim() === '';
+    });
     submit.addEventListener('click', () => {
       const val = Number(input.value);
       const tolerance = typeof q.tolerance === 'number' ? q.tolerance : 0;
@@ -197,6 +204,7 @@ export function renderQuiz(el, questions, { tier, onComplete }) {
           const rightBtn = el.querySelector(`.quiz-match-item[data-right="${freedRight}"]`);
           if (rightBtn) rightBtn.disabled = false;
           leftBtns().forEach((b) => b.classList.remove('is-active'));
+          selectedLeft = null;
           updateCheckEnabled();
           return;
         }
