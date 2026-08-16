@@ -7,9 +7,10 @@
 //
 // Task 2: every route is now gated on store.getActiveProfile(). If there
 // is no active profile, whatever route was requested renders the
-// profiles screen instead (and the address bar is nudged to #/profiles
-// for consistency) — the user can't reach any other screen until they
-// have (or pick) a profile. #/profiles itself is never gated.
+// profiles screen's content instead (the address bar is left alone —
+// we only force what's rendered, not the URL) — the user can't reach
+// any other screen until they have (or pick) a profile. #/profiles
+// itself is never gated.
 
 import { start } from './router.js';
 import * as store from './store.js';
@@ -38,9 +39,6 @@ function loadProfilesScreen() {
 function guarded(load) {
   return async (params) => {
     if (!store.getActiveProfile()) {
-      if (location.hash !== '#/profiles') {
-        location.hash = '#/profiles';
-      }
       return loadProfilesScreen();
     }
     return load(params);
