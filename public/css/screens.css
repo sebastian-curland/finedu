@@ -125,6 +125,93 @@
   font-size: 0.9rem;
 }
 
+/* --- screens/map.js ----------------------------------------------------- */
+.screen-map {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.map-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.map-header-avatar {
+  font-size: 2.5rem;
+  line-height: 1;
+}
+
+.map-header-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+}
+
+.map-header-level,
+.map-header-xp {
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+}
+
+.map-header-streak {
+  font-size: 1.25rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.map-path {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.map-node {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 44px;
+  color: var(--color-text);
+  text-align: start;
+}
+
+.map-node.is-locked {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.map-node.is-passed {
+  border: 2px solid var(--color-success);
+}
+
+.map-node-emoji {
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.map-node-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+}
+
+.map-node-title {
+  font-weight: 600;
+}
+
+.map-node-badge {
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+}
+
+.map-node-check {
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
 /* --- screens/world.js ------------------------------------------------- */
 .screen-world {
   display: flex;

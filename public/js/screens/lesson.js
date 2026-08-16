@@ -15,6 +15,7 @@
 //    lesson of the world.
 
 import * as store from '../store.js';
+import * as gamification from '../gamification.js';
 import { loadWorld } from '../../content/index.js';
 
 let root = null;
@@ -194,7 +195,7 @@ async function load(worldId, lessonId, token) {
   wireToolBlocks();
 
   if (profile) {
-    store.markLessonRead(profile.id, lesson.id);
+    gamification.onLessonRead(profile.id, lesson.id);
   }
 }
 

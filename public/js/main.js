@@ -14,6 +14,7 @@
 
 import { start } from './router.js';
 import * as store from './store.js';
+import * as gamification from './gamification.js';
 
 function placeholder(label) {
   return {
@@ -35,19 +36,25 @@ function loadProfilesScreen() {
 }
 
 // Wraps a route's real `load` so it's skipped in favor of the profiles
-// screen whenever there is no active profile.
+// screen whenever there is no active profile. This also doubles as the
+// router's central "a route resolved and there IS an active profile"
+// checkpoint: it runs exactly once per navigation (once per call to the
+// route's `load`, from router.js's resolve()), so it's the single spot to
+// touch the daily streak — never once per screen mount.
 function guarded(load) {
   return async (params) => {
-    if (!store.getActiveProfile()) {
+    const profile = store.getActiveProfile();
+    if (!profile) {
       return loadProfilesScreen();
     }
+    gamification.touchDaily(profile.id);
     return load(params);
   };
 }
 
 const routes = [
   { path: '/profiles', load: async () => loadProfilesScreen() },
-  { path: '/map', load: guarded(async () => placeholder('מפה')) },
+  { path: '/map', load: guarded(async () => import('./screens/map.js')) },
   { path: '/world/:worldId', load: guarded(async () => import('./screens/world.js')) },
   { path: '/lesson/:worldId/:lessonId', load: guarded(async () => import('./screens/lesson.js')) },
   { path: '/quiz/:worldId', load: guarded(async () => import('./screens/quiz-screen.js')) },
@@ -57,4 +64,4 @@ const routes = [
   { path: '/leaderboard', load: guarded(async () => placeholder('שיאים')) },
 ];
 
-start(routes, '/profiles');
+start(routes, '/map');

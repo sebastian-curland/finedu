@@ -9,6 +9,7 @@
 //    the 0.7 threshold, a button back to #/map).
 
 import * as store from '../store.js';
+import * as gamification from '../gamification.js';
 import { loadWorld } from '../../content/index.js';
 import { renderQuiz } from '../quiz.js';
 
@@ -80,6 +81,7 @@ async function load(worldId, token) {
       if (token !== mountToken || !root) return; // unmounted/remounted mid-quiz
       if (profile) {
         store.recordCompletion(profile.id, `quiz:${world.id}`, { score, of });
+        gamification.onQuizCompleted(profile.id, world.id, { score, of });
       }
       const passed = of > 0 && score / of >= PASS_THRESHOLD;
       renderResults({ world, score, of, passed });
