@@ -48,8 +48,8 @@ function guarded(load) {
 const routes = [
   { path: '/profiles', load: async () => loadProfilesScreen() },
   { path: '/map', load: guarded(async () => placeholder('מפה')) },
-  { path: '/world/:worldId', load: guarded(async () => placeholder('עולם')) },
-  { path: '/lesson/:worldId/:lessonId', load: guarded(async () => placeholder('שיעור')) },
+  { path: '/world/:worldId', load: guarded(async () => import('./screens/world.js')) },
+  { path: '/lesson/:worldId/:lessonId', load: guarded(async () => import('./screens/lesson.js')) },
   { path: '/quiz/:worldId', load: guarded(async () => placeholder('חידון')) },
   { path: '/tools', load: guarded(async () => placeholder('כלים')) },
   { path: '/tools/:toolId', load: guarded(async () => placeholder('כלי')) },

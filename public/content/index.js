@@ -1,0 +1,28 @@
+// content/index.js — content manifest.
+//
+// Lists every world's content module, in `num` (play) order. Each entry's
+// `load()` dynamically imports the world module lazily — nothing about a
+// world's lessons/quiz is fetched until it's actually needed.
+//
+// Later world tasks append their entry to `worlds` below, in `num` order.
+// This file itself shouldn't otherwise need to change as worlds are added.
+
+export const worlds = [
+  { id: 'money', num: 1, load: () => import('./world-01-money.js') },
+];
+
+/** @returns {{id:string,num:number,load:Function}|null} the manifest entry for `worldId`, or null. */
+export function getWorldMeta(worldId) {
+  return worlds.find((w) => w.id === worldId) || null;
+}
+
+/**
+ * Dynamically imports and returns a world's `world` content object.
+ * @returns {Promise<object|null>} the world object, or null if `worldId` is unknown.
+ */
+export async function loadWorld(worldId) {
+  const meta = getWorldMeta(worldId);
+  if (!meta) return null;
+  const mod = await meta.load();
+  return mod.world;
+}
