@@ -1,4 +1,4 @@
-function monthlyPayment({ principal, annualRatePct, months }) {
+export function monthlyPayment({ principal, annualRatePct, months }) {
   const monthlyRate = annualRatePct / 100 / 12;
 
   const payment =
@@ -12,5 +12,3 @@ function monthlyPayment({ principal, annualRatePct, months }) {
 
   return { monthlyPayment: payment, totalPaid, totalInterest };
 }
-
-module.exports = { monthlyPayment };

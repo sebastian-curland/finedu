@@ -1,4 +1,4 @@
-function capitalGainsTax({ initialValue, saleValue, cumulativeInflationPct }) {
+export function capitalGainsTax({ initialValue, saleValue, cumulativeInflationPct }) {
   const adjustedBasis = initialValue * (1 + cumulativeInflationPct / 100);
   const nominalGain = saleValue - initialValue;
   const realGain = Math.max(0, saleValue - adjustedBasis);
@@ -7,5 +7,3 @@ function capitalGainsTax({ initialValue, saleValue, cumulativeInflationPct }) {
 
   return { nominalGain, realGain, tax, netGain };
 }
-
-module.exports = { capitalGainsTax };

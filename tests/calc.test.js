@@ -1,10 +1,10 @@
-const test = require('node:test');
-const assert = require('node:assert/strict');
+import test from 'node:test';
+import assert from 'node:assert/strict';
 
-const { futureValue, ruleOf72 } = require('../public/js/calc/compound.js');
-const { realValue } = require('../public/js/calc/inflation.js');
-const { capitalGainsTax } = require('../public/js/calc/tax.js');
-const { monthlyPayment } = require('../public/js/calc/loan.js');
+import { futureValue, ruleOf72 } from '../public/js/calc/compound.js';
+import { realValue } from '../public/js/calc/inflation.js';
+import { capitalGainsTax } from '../public/js/calc/tax.js';
+import { monthlyPayment } from '../public/js/calc/loan.js';
 
 test('compound: lump sum only, annual compounding', () => {
   const result = futureValue({

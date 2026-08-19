@@ -52,8 +52,8 @@ const routes = [
   { path: '/world/:worldId', load: guarded(async () => import('./screens/world.js')) },
   { path: '/lesson/:worldId/:lessonId', load: guarded(async () => import('./screens/lesson.js')) },
   { path: '/quiz/:worldId', load: guarded(async () => import('./screens/quiz-screen.js')) },
-  { path: '/tools', load: guarded(async () => placeholder('כלים')) },
-  { path: '/tools/:toolId', load: guarded(async () => placeholder('כלי')) },
+  { path: '/tools', load: guarded(async () => import('./tools.js')) },
+  { path: '/tools/:toolId', load: guarded(async () => import('./tools.js')) },
   { path: '/portfolio', load: guarded(async () => placeholder('תיק')) },
   { path: '/leaderboard', load: guarded(async () => placeholder('שיאים')) },
 ];

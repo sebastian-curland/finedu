@@ -1,4 +1,4 @@
-function futureValue({ principal, monthlyContribution, annualRatePct, years }) {
+export function futureValue({ principal, monthlyContribution, annualRatePct, years }) {
   const annualRate = annualRatePct / 100;
   const monthlyRate = annualRate / 12;
   const months = years * 12;
@@ -17,8 +17,6 @@ function futureValue({ principal, monthlyContribution, annualRatePct, years }) {
   return { finalValue, totalDeposited, profit };
 }
 
-function ruleOf72(ratePct) {
+export function ruleOf72(ratePct) {
   return 72 / ratePct;
 }
-
-module.exports = { futureValue, ruleOf72 };
