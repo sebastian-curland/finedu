@@ -13,6 +13,8 @@ export const worlds = [
   { id: 'saving', num: 3, load: () => import('./world-03-saving.js') },
   { id: 'compound', num: 4, load: () => import('./world-04-compound.js') },
   { id: 'inflation', num: 5, load: () => import('./world-05-inflation.js') },
+  { id: 'stocks', num: 6, load: () => import('./world-06-stocks.js') },
+  { id: 'indices', num: 7, load: () => import('./world-07-indices.js') },
 ];
 
 /** @returns {{id:string,num:number,load:Function}|null} the manifest entry for `worldId`, or null. */
