@@ -159,16 +159,19 @@ function onSubmit(e) {
   const code = input ? input.value.trim() : '';
 
   if (!code) {
+    // Same rule as an invalid decode below: submitting empty must not
+    // clear an existing valid comparison row.
     pasteError = 'נא להדביק קוד השוואה';
-    guestRow = null;
     render();
     return;
   }
 
   const decoded = share.decode(code);
   if (!decoded) {
+    // Invalid paste: show the error but deliberately don't touch
+    // guestRow — a previously-shown valid comparison row must stay
+    // visible, not vanish just because a later paste attempt failed.
     pasteError = 'קוד לא תקין — בדקו שהעתקתם אותו במלואו ונסו שוב';
-    guestRow = null;
     render();
     return;
   }
