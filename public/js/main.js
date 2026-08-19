@@ -54,7 +54,7 @@ const routes = [
   { path: '/quiz/:worldId', load: guarded(async () => import('./screens/quiz-screen.js')) },
   { path: '/tools', load: guarded(async () => import('./tools.js')) },
   { path: '/tools/:toolId', load: guarded(async () => import('./tools.js')) },
-  { path: '/portfolio', load: guarded(async () => placeholder('תיק')) },
+  { path: '/portfolio', load: guarded(async () => import('./screens/portfolio.js')) },
   { path: '/leaderboard', load: guarded(async () => placeholder('שיאים')) },
 ];
 
