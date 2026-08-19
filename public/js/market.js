@@ -43,17 +43,21 @@ export async function getQuote(symbol) {
 
   if (TWELVE_DATA_API_KEY) {
     try {
-      const url = `https://api.twelvedata.com/price?symbol=${encodeURIComponent(symbol)}&apikey=${encodeURIComponent(TWELVE_DATA_API_KEY)}`;
+      // /quote (not /price): /price only returns a raw number with no
+      // percent-change or currency field, which would force changePct/
+      // currency to be fabricated under a source:'live' label. /quote has
+      // the same CORS-friendly behavior and returns real percent_change +
+      // currency fields alongside the price (as "close" — /quote has no
+      // "price" field; "close" is its current/last-traded price).
+      const url = `https://api.twelvedata.com/quote?symbol=${encodeURIComponent(symbol)}&apikey=${encodeURIComponent(TWELVE_DATA_API_KEY)}`;
       const res = await fetch(url, { signal: timeoutSignal(FETCH_TIMEOUT_MS) });
       if (res.ok) {
         const data = await res.json();
-        const price = parseFloat(data.price);
-        if (Number.isFinite(price)) {
-          // Twelve Data's /price endpoint returns only the raw price (no
-          // percent-change or currency field), so changePct defaults to 0
-          // and currency defaults to USD (true for every symbol this app
-          // quotes) when sourced live.
-          const value = { price, changePct: 0, currency: 'USD' };
+        // Twelve Data returns numeric fields as strings; coerce explicitly.
+        const price = Number(data.close);
+        const changePct = Number(data.percent_change);
+        if (Number.isFinite(price) && Number.isFinite(changePct)) {
+          const value = { price, changePct, currency: data.currency || 'USD' };
           cacheSet(cacheKey, value);
           return { ...value, source: 'live' };
         }
