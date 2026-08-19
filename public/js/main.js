@@ -55,7 +55,7 @@ const routes = [
   { path: '/tools', load: guarded(async () => import('./tools.js')) },
   { path: '/tools/:toolId', load: guarded(async () => import('./tools.js')) },
   { path: '/portfolio', load: guarded(async () => import('./screens/portfolio.js')) },
-  { path: '/leaderboard', load: guarded(async () => placeholder('שיאים')) },
+  { path: '/leaderboard', load: guarded(async () => import('./screens/leaderboard.js')) },
 ];
 
 // Central "a route resolved and there IS an active profile" hook, passed

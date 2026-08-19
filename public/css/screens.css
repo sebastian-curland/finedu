@@ -807,3 +807,87 @@
   text-align: center;
   padding-block: var(--space-3);
 }
+
+/* --- screens/leaderboard.js ---------------------------------------------- */
+.screen-leaderboard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.leaderboard-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.leaderboard-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 44px;
+  padding-block: var(--space-1);
+}
+
+.leaderboard-row.is-active {
+  font-weight: 700;
+}
+
+.leaderboard-row.is-guest {
+  border-block-start: 1px dashed var(--color-border);
+  padding-block-start: var(--space-2);
+  opacity: 0.85;
+}
+
+.leaderboard-rank {
+  min-width: 1.5em;
+  color: var(--color-text-muted);
+  font-weight: 700;
+  text-align: center;
+}
+
+.leaderboard-avatar {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.leaderboard-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.leaderboard-meta {
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+}
+
+.leaderboard-xp {
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.leaderboard-guest-chip {
+  white-space: nowrap;
+}
+
+.leaderboard-empty {
+  color: var(--color-text-muted);
+  text-align: center;
+  padding-block: var(--space-3);
+}
+
+.leaderboard-share-card h2 {
+  margin-block-end: var(--space-3);
+}
+
+.leaderboard-share-actions {
+  display: flex;
+  gap: var(--space-3);
+}
+
+.leaderboard-share-actions .btn {
+  flex: 1;
+}
