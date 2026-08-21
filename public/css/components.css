@@ -134,7 +134,8 @@
 }
 
 /* --- Empty / placeholder state -------------------------------------------
-   Used by main.js for "coming soon" routes and by screens for empty lists.
+   Used by screens for loading states, "not found" fallbacks, empty lists,
+   and router.js's route-load-failure fallback.
    ---------------------------------------------------------------------- */
 .empty-state {
   display: flex;

@@ -77,11 +77,21 @@ async function load(worldId, token) {
 
   renderQuiz(quizRoot, world.quiz, {
     tier,
-    onComplete: ({ score, of }) => {
+    onComplete: async ({ score, of }) => {
       if (token !== mountToken || !root) return; // unmounted/remounted mid-quiz
       if (profile) {
         store.recordCompletion(profile.id, `quiz:${world.id}`, { score, of });
-        gamification.onQuizCompleted(profile.id, world.id, { score, of });
+        // Awaited (not fire-and-forget) so the XP/badge writes are
+        // guaranteed to have landed in store.js before the results
+        // screen renders below — otherwise a synchronous read of
+        // store.badges right after this resolves could race the async
+        // badge-award write by a microtask/tick.
+        try {
+          await gamification.onQuizCompleted(profile.id, world.id, { score, of });
+        } catch (err) {
+          console.error('[quiz-screen] onQuizCompleted failed', err);
+        }
+        if (token !== mountToken || !root) return; // unmounted/remounted while awaiting
       }
       const passed = of > 0 && score / of >= PASS_THRESHOLD;
       renderResults({ world, score, of, passed });

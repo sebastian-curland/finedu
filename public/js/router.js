@@ -92,6 +92,16 @@ async function resolve(routes, notFoundRoute, onRouteResolved) {
     mod = await match.route.load(match.params);
   } catch (err) {
     console.error('[router] failed to load route module', match.route.path, err);
+    if (app) {
+      app.innerHTML = `
+        <div class="empty-state">
+          <p class="empty-state-emoji" aria-hidden="true">⚠️</p>
+          <h2>משהו השתבש בטעינת המסך</h2>
+          <p>נסו לרענן את הדף או לחזור למפה.</p>
+          <a class="btn btn-secondary" href="#/map">חזרה למפה</a>
+        </div>
+      `;
+    }
     return;
   }
 

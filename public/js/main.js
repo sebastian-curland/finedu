@@ -2,8 +2,9 @@
 //
 // Screen modules are always loaded lazily via dynamic import() inside a
 // route's `load` handler so a missing file never breaks the whole app
-// during incremental builds. Routes without a real screen yet still
-// render a "coming soon" placeholder.
+// during incremental builds. Every route below is now wired to a real
+// screen module (as of Task 17, all of Tasks 5/7/9/10's routes included)
+// — there is no "coming soon" placeholder left anywhere in the app.
 //
 // Task 2: every route is now gated on store.getActiveProfile(). If there
 // is no active profile, whatever route was requested renders the
@@ -15,21 +16,6 @@
 import { start } from './router.js';
 import * as store from './store.js';
 import * as gamification from './gamification.js';
-
-function placeholder(label) {
-  return {
-    mount(el) {
-      el.innerHTML = `
-        <div class="empty-state">
-          <p class="empty-state-emoji" aria-hidden="true">🚧</p>
-          <h2>${label}</h2>
-          <p>בקרוב…</p>
-        </div>
-      `;
-    },
-    unmount() {},
-  };
-}
 
 function loadProfilesScreen() {
   return import('./screens/profiles.js');

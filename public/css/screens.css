@@ -5,6 +5,30 @@
    their own CSS files.
    ========================================================================== */
 
+/* --- screen mount transition ----------------------------------------------
+   router.js replaces #app's entire content on every route change (see
+   router.js's resolve()): it clears #app, then a screen module's mount()
+   sets its own root wrapper element via innerHTML. That wrapper is always
+   a fresh DOM node, so a plain opacity animation on #app's direct child
+   naturally restarts on every screen mount with no JS required — no
+   screen file needs to know this exists. Opacity-only (no transform/
+   height) so there's no layout shift, and prefers-reduced-motion turns it
+   off entirely for anyone who's asked for that. --------------------------- */
+#app > * {
+  animation: screen-fade-in 180ms ease;
+}
+
+@keyframes screen-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #app > * {
+    animation: none;
+  }
+}
+
 /* --- screens/profiles.js -------------------------------------------------- */
 .screen-profiles {
   display: flex;
@@ -262,7 +286,10 @@
 }
 
 .lesson-back {
+  display: inline-flex;
+  align-items: center;
   align-self: start;
+  min-height: 44px;
   color: var(--color-primary);
   font-weight: 600;
   font-size: 0.9rem;
@@ -338,15 +365,15 @@
 }
 
 .callout-tip {
-  background: #E6FAF5;
+  background: var(--color-success-tint);
 }
 
 .callout-warning {
-  background: #FFF6E0;
+  background: var(--color-warning-tint);
 }
 
 .callout-fact {
-  background: #EFEBFD;
+  background: var(--color-primary-tint);
 }
 
 .lesson-nav {
@@ -473,11 +500,11 @@
 }
 
 .quiz-feedback.is-correct {
-  background: #E6FAF5;
+  background: var(--color-success-tint);
 }
 
 .quiz-feedback.is-incorrect {
-  background: #FDECEA;
+  background: var(--color-danger-tint);
 }
 
 .quiz-feedback-result {

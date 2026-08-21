@@ -65,6 +65,10 @@ p {
   --color-text: #2D3436;
   --color-text-muted: #636E72;
   --color-border: #E2E1F5;
+  --color-success-tint: #E6FAF5;
+  --color-warning-tint: #FFF6E0;
+  --color-danger-tint: #FDECEA;
+  --color-primary-tint: #EFEBFD;
 
   /* Spacing scale */
   --space-1: 4px;

@@ -14,6 +14,23 @@
 
 import * as store from '../store.js';
 
+// Router-nudge for the "no active profile" gate (main.js's `guarded()`):
+// when there's no active profile, EVERY route's hash still gets forced to
+// the not-found redirect target ('/map' — see main.js) before this screen
+// ever renders, so by the time a brand-new user creates (or an
+// active-profile-less user switches to) their first profile, the URL hash
+// already equals the target route and won't change again. A real
+// `hashchange` event never fires, so router.js's listener — the only
+// thing that re-runs route resolution — never re-fires either, and the
+// user stays stranded on this profiles screen even though the tab bar
+// shows the target tab as active. Dispatching a synthetic `hashchange`
+// forces router.js to re-resolve the current hash now that
+// store.getActiveProfile() will succeed, without profiles.js importing
+// router.js or router.js needing to know about store.js.
+function reresolveRoute() {
+  window.dispatchEvent(new HashChangeEvent('hashchange'));
+}
+
 const AVATARS = ['🦁', '🐼', '🦊', '🐸', '🐧', '🦄', '🐢', '🐬'];
 const TIER_LABELS = { 1: 'צעיר', 2: 'בוגר' };
 
@@ -149,7 +166,7 @@ function onClick(e) {
     store.setActiveProfile(target.dataset.id);
     switcherOpen = false;
     confirmingDeleteId = null;
-    render();
+    reresolveRoute();
     return;
   }
 
@@ -215,7 +232,7 @@ function onSubmit(e) {
   formError = '';
   switcherOpen = false;
   confirmingDeleteId = null;
-  render();
+  reresolveRoute();
 }
 
 export function mount(el) {

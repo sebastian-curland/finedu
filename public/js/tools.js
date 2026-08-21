@@ -144,9 +144,10 @@ function renderCompoundCalculator(container) {
 
     compareResult.hidden = !compareToggle.checked;
     if (compareToggle.checked) {
-      const startToday = futureValue({ ...base, years: base.years });
+      // "start today" is exactly `base` as already computed into `result`
+      // above (years unchanged) — no need to recompute it.
       const startIn10 = futureValue({ ...base, years: Math.max(0, base.years - 10) });
-      container.querySelector('#compound-compare-today').textContent = formatCurrency(startToday.finalValue);
+      container.querySelector('#compound-compare-today').textContent = formatCurrency(result.finalValue);
       container.querySelector('#compound-compare-wait').textContent = formatCurrency(startIn10.finalValue);
     }
   }
