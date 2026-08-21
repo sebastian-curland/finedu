@@ -6,7 +6,8 @@
 //
 // A world node is unlocked if it's world 1, or the *previous* world's
 // `quiz:${prevId}` completion recorded on the active profile passed the
-// 0.7 threshold (same threshold quiz-screen.js uses for pass/fail).
+// 0.7 threshold (same threshold quiz-screen.js uses for pass/fail), or
+// debug-flags.js's UNLOCK_ALL_WORLDS is set (FINEDU_UNLOCK_ALL=1 ./start.sh).
 // Locked nodes show 🔒 and aren't tappable. Unlocked nodes link to
 // `#/world/:worldId`; a passed world also shows its earned badge and a
 // checkmark.
@@ -14,6 +15,7 @@
 import * as store from '../store.js';
 import * as gamification from '../gamification.js';
 import { worlds as worldMetas, loadWorld } from '../../content/index.js';
+import { UNLOCK_ALL_WORLDS } from '../../debug-flags.js';
 
 const PASS_THRESHOLD = 0.7;
 
@@ -81,7 +83,7 @@ async function load(token) {
     .map((world, i) => {
       if (!world) return '';
       const prevMeta = i > 0 ? orderedMetas[i - 1] : null;
-      const unlocked = i === 0 || isPassed(completed, `quiz:${prevMeta.id}`);
+      const unlocked = UNLOCK_ALL_WORLDS || i === 0 || isPassed(completed, `quiz:${prevMeta.id}`);
       const passed = isPassed(completed, `quiz:${world.id}`);
       return renderNode(world, { unlocked, passed });
     })
