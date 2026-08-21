@@ -123,17 +123,23 @@ export function setActiveProfile(id) {
 
 /**
  * Creates a new profile with every schema field at its documented default.
- * @param {{name: string, avatar: string, tier: 1|2}} fields
+ * There is only one profile tier now (2 — full content depth for everyone,
+ * no "kid"/"adult" choice at creation) — `tier` stays on the schema only
+ * because gamification.js/lesson.js/quiz-screen.js still read it to decide
+ * deep-block visibility and quiz breadth, and hardcoding it here means
+ * every profile automatically gets that full-depth behavior with no
+ * per-call-site risk of passing a different value.
+ * @param {{name: string, avatar: string}} fields
  * @returns {string} the new profile's id.
  */
-export function createProfile({ name, avatar, tier }) {
+export function createProfile({ name, avatar }) {
   const state = load();
   const id = uuid();
   state.profiles[id] = {
     id,
     name,
     avatar,
-    tier,
+    tier: 2,
     xp: 0,
     badges: [],
     lessonsRead: [],
