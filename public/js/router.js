@@ -109,6 +109,14 @@ async function resolve(routes, notFoundRoute, onRouteResolved) {
     mod.mount(app, match.params);
     currentModule = mod;
 
+    // Explicitly reset scroll position on every navigation. Browsers
+    // inconsistently auto-scroll on hash-only navigation when the fragment
+    // matches no element id (which none of our routes do) — some reset to
+    // top, some (notably mobile Safari) leave the previous scroll offset in
+    // place, so a shorter new screen can render already scrolled near its
+    // bottom. Don't rely on that implicit behavior; set it ourselves.
+    window.scrollTo(0, 0);
+
     if (typeof onRouteResolved === 'function') {
       try {
         onRouteResolved(match.route.path, match.params);
