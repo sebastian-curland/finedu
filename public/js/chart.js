@@ -40,10 +40,10 @@ export function lineChart(container, points, { width = 320, height = 160, labelF
 
   const xs = points.map((p) => p.x);
   const ys = points.map((p) => p.y);
-  const xMin = Math.min(...xs);
-  const xMax = Math.max(...xs);
-  const yMin = Math.min(0, ...ys);
-  const yMax = Math.max(...ys);
+  const xMin = xs.reduce((min, x) => Math.min(min, x), Infinity);
+  const xMax = xs.reduce((max, x) => Math.max(max, x), -Infinity);
+  const yMin = ys.reduce((min, y) => Math.min(min, y), 0);
+  const yMax = ys.reduce((max, y) => Math.max(max, y), -Infinity);
 
   const plotW = width - PADDING.left - PADDING.right;
   const plotH = height - PADDING.top - PADDING.bottom;

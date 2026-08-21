@@ -63,8 +63,9 @@ function escapeHtml(str) {
 }
 
 function formatCurrency(n) {
-  const rounded = Math.round(Number(n) || 0);
-  return `₪${rounded.toLocaleString('he-IL')}`;
+  const value = Number(n);
+  if (!Number.isFinite(value)) return '—';
+  return `₪${Math.round(value).toLocaleString('he-IL')}`;
 }
 
 function roundIls(n) {

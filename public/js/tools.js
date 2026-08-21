@@ -38,8 +38,9 @@ function escapeHtml(str) {
 }
 
 function formatCurrency(n) {
-  const rounded = Math.round(Number(n) || 0);
-  return `₪${rounded.toLocaleString('he-IL')}`;
+  const value = Number(n);
+  if (!Number.isFinite(value)) return '—';
+  return `₪${Math.round(value).toLocaleString('he-IL')}`;
 }
 
 function num(container, id, fallback = 0) {
@@ -124,7 +125,7 @@ function renderCompoundCalculator(container) {
       principal: Math.max(0, num(container, 'compound-principal', 0)),
       monthlyContribution: Math.max(0, num(container, 'compound-contribution', 0)),
       annualRatePct: num(container, 'compound-rate', 0),
-      years: Math.max(1, int(container, 'compound-years', 1)),
+      years: Math.min(60, Math.max(1, int(container, 'compound-years', 1))),
     };
   }
 
