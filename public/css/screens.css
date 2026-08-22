@@ -971,3 +971,144 @@
 .leaderboard-share-actions .btn {
   flex: 1;
 }
+
+/* --- js/celebrate.js ------------------------------------------------------
+   Confetti + toast presentation layer, shared by any screen. Both layers
+   are fixed, span the full viewport, and never intercept clicks
+   (pointer-events: none) except individual toast cards don't need to
+   receive input either — dismissal is time-based, not click-based.
+   ---------------------------------------------------------------------- */
+#confetti-layer {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 100;
+}
+
+.confetti-piece {
+  /* left/top (physical, not logical) is intentional here: --confetti-x/-y
+     come from getBoundingClientRect(), which is always a physical
+     viewport pixel offset regardless of document direction — using
+     inset-inline-start under this app's dir="rtl" would anchor to the
+     physical right edge instead and burst confetti from the wrong side. */
+  position: fixed;
+  left: var(--confetti-x);
+  top: var(--confetti-y);
+  width: 8px;
+  height: 8px;
+  margin: -4px;
+  border-radius: var(--radius-sm);
+  animation-name: confetti-fall;
+  animation-timing-function: ease-out;
+  animation-fill-mode: forwards;
+}
+
+@keyframes confetti-fall {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--confetti-drift), calc(var(--confetti-rise) + 160px))
+      rotate(var(--confetti-rotation));
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Belt-and-suspenders: confettiBurst() already skips DOM creation
+     entirely when reduced motion is on, so this rule normally never
+     matches anything — kept for the same 3-part shape as every other
+     animation in this file. */
+  .confetti-piece {
+    animation: none;
+    opacity: 0;
+  }
+}
+
+#toast-layer {
+  position: fixed;
+  inset-block-start: env(safe-area-inset-top, 0);
+  inset-inline: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  pointer-events: none;
+  z-index: 100;
+}
+
+.celebrate-toast {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  max-width: 360px;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  animation: celebrate-toast-in 220ms ease;
+}
+
+.celebrate-toast.is-leaving {
+  animation: celebrate-toast-out 220ms ease forwards;
+}
+
+@keyframes celebrate-toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes celebrate-toast-out {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .celebrate-toast {
+    animation: none;
+  }
+
+  .celebrate-toast.is-leaving {
+    animation: none;
+  }
+}
+
+.celebrate-toast.is-reduced-motion {
+  animation: none;
+}
+
+.celebrate-toast-emoji {
+  font-size: 1.75rem;
+  line-height: 1;
+}
+
+.celebrate-toast-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.celebrate-toast-title {
+  font-weight: 700;
+}
+
+.celebrate-toast-subtitle {
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+}
