@@ -286,10 +286,72 @@
   font-size: 0.9rem;
 }
 
-.lesson-blocks {
+/* Story-card pagination: one block rendered per screen, see lesson.js's
+   renderCard(). */
+.lesson-progress-dots {
   display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+}
+
+.lesson-dot {
+  color: var(--color-border);
+  font-size: 0.55rem;
+  line-height: 1;
+}
+
+.lesson-dot.is-filled {
+  color: var(--color-primary);
+}
+
+.lesson-dot.is-current {
+  font-size: 0.85rem;
+}
+
+.lesson-card {
+  animation: lesson-card-in 220ms ease;
+}
+
+@keyframes lesson-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lesson-card {
+    animation: none;
+  }
+}
+
+.lesson-card.is-bonus {
+  border: 2px dashed var(--color-primary);
+}
+
+.lesson-bonus-chip {
+  display: inline-flex;
+  align-self: flex-start;
+  padding-inline: var(--space-3);
+  padding-block: var(--space-1);
+  margin-block-end: var(--space-2);
+  border-radius: var(--radius-full);
+  background: var(--color-primary-tint);
+  color: var(--color-primary);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.lesson-card-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
 }
 
 .lesson-block p {
