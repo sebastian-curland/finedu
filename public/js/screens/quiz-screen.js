@@ -10,6 +10,7 @@
 
 import * as store from '../store.js';
 import * as gamification from '../gamification.js';
+import * as celebrate from '../celebrate.js';
 import { loadWorld } from '../../content/index.js';
 import { renderQuiz } from '../quiz.js';
 
@@ -79,6 +80,7 @@ async function load(worldId, token) {
     tier,
     onComplete: async ({ score, of }) => {
       if (token !== mountToken || !root) return; // unmounted/remounted mid-quiz
+      let outcome = null;
       if (profile) {
         store.recordCompletion(profile.id, `quiz:${world.id}`, { score, of });
         // Awaited (not fire-and-forget) so the XP/badge writes are
@@ -87,7 +89,7 @@ async function load(worldId, token) {
         // store.badges right after this resolves could race the async
         // badge-award write by a microtask/tick.
         try {
-          await gamification.onQuizCompleted(profile.id, world.id, { score, of });
+          outcome = await gamification.onQuizCompleted(profile.id, world.id, { score, of });
         } catch (err) {
           console.error('[quiz-screen] onQuizCompleted failed', err);
         }
@@ -95,6 +97,35 @@ async function load(worldId, token) {
       }
       const passed = of > 0 && score / of >= PASS_THRESHOLD;
       renderResults({ world, score, of, passed });
+
+      // Celebration is purely cosmetic and runs after the results screen
+      // is already on-screen — a failure here (or in celebrate.js itself)
+      // must never prevent the results from rendering above.
+      try {
+        if (outcome) {
+          const toasts = [];
+          if (outcome.leveledUp) {
+            toasts.push({
+              emoji: '⭐',
+              title: 'עלייה ברמה!',
+              subtitle: outcome.levelAfter.name,
+            });
+          }
+          for (const badge of outcome.newBadges) {
+            toasts.push({
+              emoji: badge.emoji,
+              title: 'תג חדש!',
+              subtitle: badge.title,
+            });
+          }
+          celebrate.celebrate({
+            toasts,
+            confetti: outcome.passed || outcome.perfect,
+          });
+        }
+      } catch (err) {
+        console.error('[quiz-screen] celebrate failed', err);
+      }
     },
   });
 }

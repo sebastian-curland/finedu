@@ -80,14 +80,64 @@ export function onLessonRead(profileId, lessonId) {
 }
 
 /**
+ * Pure diffing/derivation helper for onQuizCompleted, factored out so it
+ * can be unit-tested without a store.js/localStorage shim. Takes plain
+ * before/after values only — no store.js calls in here.
+ * `badgeCatalog` maps badge id -> {title, emoji} for every badge that
+ * could have newly appeared in `badgesAfter` (BADGES.* plus, when
+ * relevant, the world's own `badge`), so newBadges can carry display
+ * info regardless of which of those two shapes a given badge came from.
+ * @param {{perfect:boolean, passed:boolean, xpBefore:number, xpAfter:number,
+ *   badgesBefore:string[], badgesAfter:string[],
+ *   badgeCatalog?:Record<string,{title:string, emoji:string}>}} input
+ * @returns {{perfect:boolean, passed:boolean, levelBefore:object,
+ *   levelAfter:object, leveledUp:boolean,
+ *   newBadges:Array<{id:string, title:string, emoji:string}>}}
+ */
+export function computeQuizOutcome({
+  perfect,
+  passed,
+  xpBefore,
+  xpAfter,
+  badgesBefore,
+  badgesAfter,
+  badgeCatalog = {},
+}) {
+  const levelBefore = levelFor(xpBefore);
+  const levelAfter = levelFor(xpAfter);
+  const leveledUp = levelAfter.level > levelBefore.level;
+
+  const newBadges = badgesAfter
+    .filter((id) => !badgesBefore.includes(id))
+    .map((id) => {
+      const meta = badgeCatalog[id];
+      return { id, title: meta ? meta.title : id, emoji: meta ? meta.emoji : '🏅' };
+    });
+
+  return { perfect, passed, levelBefore, levelAfter, leveledUp, newBadges };
+}
+
+/**
  * Call this from quiz-screen.js's onComplete, alongside (not instead of)
  * store.recordCompletion — that records the raw score, this awards XP and
  * badges for it.
+ *
+ * Return-value contract: this has exactly one call site in the whole app
+ * today (public/js/screens/quiz-screen.js) — if a second caller is ever
+ * added, double-check it actually wants/handles this return shape.
+ *
  * @param {string} profileId
  * @param {string} worldId
  * @param {{score:number, of:number}} result
+ * @returns {Promise<{perfect:boolean, passed:boolean, levelBefore:object,
+ *   levelAfter:object, leveledUp:boolean,
+ *   newBadges:Array<{id:string, title:string, emoji:string}>}>}
  */
 export async function onQuizCompleted(profileId, worldId, { score, of }) {
+  const before = store.getActiveProfile();
+  const xpBefore = before ? before.xp || 0 : 0;
+  const badgesBefore = before ? before.badges.slice() : [];
+
   store.addXp(profileId, CORRECT_ANSWER_XP * score);
 
   const perfect = of > 0 && score === of;
@@ -97,15 +147,37 @@ export async function onQuizCompleted(profileId, worldId, { score, of }) {
   }
 
   const passed = of > 0 && score / of >= PASS_THRESHOLD;
+  let worldBadge = null;
   if (passed) {
     const world = await loadWorld(worldId);
     if (world && world.badge) {
+      worldBadge = world.badge;
       store.addBadge(profileId, world.badge.id);
     }
     if (worldId === FRAUD_WORLD_ID) {
       store.addBadge(profileId, BADGES.SCAM_HUNTER.id);
     }
   }
+
+  const after = store.getActiveProfile();
+  const xpAfter = after ? after.xp || 0 : xpBefore;
+  const badgesAfter = after ? after.badges : badgesBefore;
+
+  const badgeCatalog = {
+    [BADGES.NO_MISTAKES.id]: BADGES.NO_MISTAKES,
+    [BADGES.SCAM_HUNTER.id]: BADGES.SCAM_HUNTER,
+    ...(worldBadge ? { [worldBadge.id]: worldBadge } : {}),
+  };
+
+  return computeQuizOutcome({
+    perfect,
+    passed,
+    xpBefore,
+    xpAfter,
+    badgesBefore,
+    badgesAfter,
+    badgeCatalog,
+  });
 }
 
 /**
