@@ -39,6 +39,13 @@ function isPassed(completed, key) {
 
 function renderHeader(profile) {
   const lvl = gamification.levelFor(profile.xp);
+  const pct = lvl.xpForNext === null
+    ? 100
+    : Math.round((lvl.xpIntoLevel / (lvl.xpIntoLevel + lvl.xpForNext)) * 100);
+  const progressLabel = lvl.xpForNext === null
+    ? 'רמה מקסימלית! 🏆'
+    : `עוד ${lvl.xpForNext} נק' לרמה הבאה`;
+  const streakLit = profile.streak.count > 0 ? ' is-lit' : '';
   return `
     <div class="card map-header">
       <span class="map-header-avatar" aria-hidden="true">${profile.avatar}</span>
@@ -46,8 +53,12 @@ function renderHeader(profile) {
         <strong>${escapeHtml(profile.name)}</strong>
         <span class="map-header-level">רמה ${lvl.level} · ${escapeHtml(lvl.name)}</span>
         <span class="map-header-xp">${profile.xp} נק' נסיון</span>
+        <div class="map-header-progress">
+          <div class="progress"><div class="progress-bar" style="width:${pct}%"></div></div>
+          <span class="map-header-progress-label">${progressLabel}</span>
+        </div>
       </div>
-      <div class="map-header-streak" aria-hidden="true">🔥 ${profile.streak.count}</div>
+      <div class="map-header-streak" aria-hidden="true"><span class="map-header-streak-emoji${streakLit}">🔥</span> ${profile.streak.count}</div>
     </div>
   `;
 }

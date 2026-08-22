@@ -171,10 +171,48 @@
   font-size: 0.9rem;
 }
 
+.map-header-progress {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-block-start: var(--space-1);
+}
+
+.map-header-progress-label {
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
+}
+
 .map-header-streak {
   font-size: 1.25rem;
   font-weight: 700;
   white-space: nowrap;
+}
+
+.map-header-streak-emoji {
+  display: inline-block;
+}
+
+.map-header-streak-emoji.is-lit {
+  animation: streak-flicker 1.6s ease-in-out infinite;
+}
+
+@keyframes streak-flicker {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.75;
+    transform: scale(1.08);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .map-header-streak-emoji.is-lit {
+    animation: none;
+  }
 }
 
 .map-path {
