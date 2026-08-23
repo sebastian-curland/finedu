@@ -3,8 +3,8 @@
 // Topic arc: ריבית פשוטה מול ריבית דריבית → כלל 72 → כוח הזמן (מתחילים
 // בגיל 15 מול גיל 30) → ריבית דריבית בעולם האמיתי (חיסכון מול חוב).
 //
-// This is the plan's centerpiece world — the concept Sebastian most wants
-// his kids to internalize — so it gets the full 4 lessons and the richer
+// This is the plan's centerpiece world — the concept the app most wants
+// learners to internalize — so it gets the full 4 lessons and the richer
 // end of the quiz-question range, with a `deep` block in every lesson.
 //
 // All numbers quoted in lesson text are computed against this exact same

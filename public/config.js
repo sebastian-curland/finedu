@@ -1,4 +1,4 @@
-// config.js — the one file Sebastian edits by hand to enable live market data.
+// config.js — the one file you edit by hand to enable live market data.
 //
 // כדי לקבל מפתח API חינמי (Twelve Data): הירשמו בכתובת twelvedata.com,
 // והדביקו את המפתח שקיבלתם למחרוזת למטה. האפליקציה עובדת גם בלי מפתח —
